@@ -1,6 +1,7 @@
 package ModuloSeguridad.Seguridad.Modelos;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document()
@@ -10,6 +11,17 @@ public class Usuario {
     private String seudonimo;
     private String correo;
     private String contrasena;
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    @DBRef
+    private Rol rol;
 
     public Usuario(String seudonimo, String correo, String contrasena) {
         this.seudonimo = seudonimo;
