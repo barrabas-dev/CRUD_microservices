@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 @CrossOrigin
@@ -99,5 +101,20 @@ public class ControladorUsuario {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    @PostMapping("/validar")
+    public Usuario validate(@RequestBody  Usuario infoUsuario,
+                            final HttpServletResponse response) throws IOException {
+        Usuario usuarioActual=this.miRepositorioUsuario
+                .getUserByEmail(infoUsuario.getCorreo());
+        if (usuarioActual!=null &&
+                usuarioActual.getContrasena().equals(convertirSHA256(infoUsuario.getContrasena()))) {
+            usuarioActual.setContrasena("");
+            return usuarioActual;
+        }else{
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
     }
 }
